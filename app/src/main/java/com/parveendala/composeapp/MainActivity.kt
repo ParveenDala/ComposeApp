@@ -17,9 +17,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,8 +40,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun MainScreen() {
-    val nameListState = remember { mutableStateListOf<String>("Name 1", "Name 2") }
-    val nameTextFieldContent = remember { mutableStateOf<String>("") }
+    val mainViewModel = MainViewModel()
     Surface(
         color = Color.LightGray,
         modifier = Modifier.fillMaxSize()
@@ -62,18 +59,18 @@ private fun MainScreen() {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    NameList(nameList = nameListState)
+                    NameList(nameList = mainViewModel.nameList.observeAsState().value)
                 }
-                NameTextField(value = nameTextFieldContent.value) { newValue -> nameTextFieldContent.value = newValue }
-                SubmitButton { nameListState.add(nameTextFieldContent.value) }
+                NameTextField(value = mainViewModel.nameText.observeAsState().value) { newText -> mainViewModel.onTextChanged(newText) }
+                SubmitButton { mainViewModel.addNewName(mainViewModel.nameText.value) }
             }
         }
     }
 }
 
 @Composable
-fun NameList(nameList: List<String>) {
-    nameList.forEach { name ->
+fun NameList(nameList: List<String>?) {
+    nameList?.forEach { name ->
         NameListItem(name)
     }
 }
@@ -93,8 +90,8 @@ fun NameListItem(name: String) {
 }
 
 @Composable
-fun NameTextField(value: String, onValueChange: (newValue: String) -> Unit) {
-    TextField(value = value, onValueChange = onValueChange)
+fun NameTextField(value: String?, onValueChange: (newValue: String) -> Unit) {
+    TextField(value = value ?: "", onValueChange = onValueChange)
 }
 
 @Composable
