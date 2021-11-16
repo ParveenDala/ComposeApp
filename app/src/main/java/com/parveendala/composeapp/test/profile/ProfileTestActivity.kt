@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -30,11 +31,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Top
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.parveendala.composeapp.R
+import coil.compose.rememberImagePainter
+import coil.transform.CircleCropTransformation
 import com.parveendala.composeapp.ui.theme.ComposeAppTheme
 
 class ProfileTestActivity : ComponentActivity() {
@@ -49,27 +49,17 @@ class ProfileTestActivity : ComponentActivity() {
 }
 
 @Composable
-private fun MainScreen() {
+private fun MainScreen(userProfileTestList: List<UserProfileTest> = userProfileList) {
     Scaffold(topBar = { AppBar() }) {
         Surface(
-            color = Color.LightGray,
             modifier = Modifier.fillMaxSize()
         ) {
             Surface(
-                color = Color.LightGray,
                 modifier = Modifier.wrapContentSize(align = Alignment.TopCenter)
             ) {
-                ProfileCard()
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Column(
-                        modifier = Modifier.background(Color.Gray),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+                LazyColumn {
+                    items(userProfileTestList) { userProfileTest ->
+                        ProfileCard(userProfileTest)
                     }
                 }
             }
@@ -87,12 +77,13 @@ fun AppBar() {
 }
 
 @Composable
-fun ProfileCard() {
+fun ProfileCard(userProfileTest: UserProfileTest) {
     Card(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(16.dp, 12.dp, 16.dp, 4.dp)
             .fillMaxWidth()
             .wrapContentHeight(align = Top),
+        backgroundColor = Color.White,
         elevation = 8.dp,
     ) {
         Row(
@@ -101,42 +92,46 @@ fun ProfileCard() {
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            ProfilePicture()
-            ProfileContent()
+            ProfilePicture(userProfileTest.pictureUrl, userProfileTest.onlineStatus)
+            ProfileContent(userProfileTest.name, userProfileTest.onlineStatus)
         }
     }
 }
 
 @Composable
-fun ProfilePicture() {
+fun ProfilePicture(pictureUrl: String, onlineStatus: Boolean) {
     Card(
         shape = CircleShape,
-        border = BorderStroke(1.5.dp, color = Color.Green),
+        border = BorderStroke(1.5.dp, color = if (onlineStatus) Color.Green else Color.Red),
         modifier = Modifier.padding(16.dp),
+        backgroundColor = Color.White,
         elevation = 4.dp
     ) {
         Image(
-            painter = painterResource(id = R.drawable.pp1),
+            painter = rememberImagePainter(pictureUrl,
+                builder = {
+                    transformations(CircleCropTransformation())
+                }
+            ),
             contentDescription = "Profile Picture",
-            modifier = Modifier.size(72.dp),
-            contentScale = ContentScale.Crop
+            modifier = Modifier.size(72.dp)
         )
     }
 }
 
 @Composable
-fun ProfileContent() {
+fun ProfileContent(name: String, onlineStatus: Boolean) {
     Column(
         modifier = Modifier
             .padding(4.dp)
             .fillMaxWidth()
     ) {
         Text(
-            text = "Profile Name",
-            style = MaterialTheme.typography.h5
+            text = name,
+            style = MaterialTheme.typography.h6
         )
         Text(
-            text = "Online Status",
+            text = if (onlineStatus) "Available" else "Offline",
             style = MaterialTheme.typography.subtitle2,
             color = Color.Gray
         )
