@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Button
@@ -17,77 +16,92 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.parveendala.composeapp.ui.theme.ComposeAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MainScreen()
-        }
-    }
-}
-
-@Composable
-private fun MainScreen() {
-    ComposeAppTheme {
-        Surface(
-            color = Color.LightGray,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Surface(
-                color = MaterialTheme.colors.secondary,
-                modifier = Modifier.wrapContentSize(align = Alignment.TopCenter)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .background(Color.Gray),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Greeting("Android")
-                    SubmitButton()
-                }
+            ComposeAppTheme {
+                MainScreen()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String) {
+private fun MainScreen() {
+    val nameListState = remember { mutableStateListOf<String>("Name 1", "Name 2") }
+    Surface(
+        color = Color.LightGray,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Surface(
+            color = MaterialTheme.colors.secondary,
+            modifier = Modifier.wrapContentSize(align = Alignment.TopCenter)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Column(
+                    modifier = Modifier.background(Color.Gray),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    NameList(nameList = nameListState)
+                }
+                SubmitButton { nameListState.add("New Name") }
+            }
+        }
+    }
+}
+
+@Composable
+fun NameList(nameList: List<String>) {
+    nameList.forEach { name ->
+        NameListItem(name)
+    }
+}
+
+@Composable
+fun NameListItem(name: String) {
     Text(
-        text = "Hello $name!",
+        text = name,
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp)
+            .background(color = Color.Yellow)
             .padding(16.dp)
-            .clickable { println("Text CLicked") },
+            .clickable { println("Item CLicked") },
         style = MaterialTheme.typography.h4,
         textAlign = TextAlign.Center,
-//        style = TextStyle(
-//            color = Color.DarkGray,
-//            fontSize = 16.sp,
-//            fontFamily = FontFamily.Monospace,
-//            textAlign = TextAlign.Center
-//        )
     )
 }
 
 @Composable
-fun SubmitButton() {
+fun SubmitButton(onButtonCLicked: () -> Unit) {
     Button(
-        onClick = { println("Button Clicked") },
+        onClick = onButtonCLicked,
         modifier = Modifier
             .wrapContentSize(align = Alignment.Center)
-            .padding(16.dp)
+            .padding(16.dp),
+        shape = MaterialTheme.shapes.large
     ) {
-        Text(text = "Submit")
+        Text(
+            text = "Add New Item",
+            modifier = Modifier.padding(32.dp, 12.dp),
+            fontSize = 16.sp
+        )
     }
 }
 
@@ -95,5 +109,7 @@ fun SubmitButton() {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    MainScreen()
+    ComposeAppTheme {
+        MainScreen()
+    }
 }
