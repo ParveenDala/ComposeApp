@@ -1,9 +1,9 @@
-package com.parveendala.composeapp
+package com.parveendala.composeapp.test.basic
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class MainViewModel : ViewModel() {
+class BasicTestViewModel : ViewModel() {
     val nameList = MutableLiveData<List<String>>()
     val nameText = MutableLiveData<String>()
 

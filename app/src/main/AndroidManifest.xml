@@ -13,6 +13,16 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:theme="@style/Theme.ComposeApp.NoActionBar" />
+        <activity
+            android:name=".test.basic.BasicTestActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.ComposeApp.NoActionBar" />
+        <activity
+            android:name=".test.profile.ProfileTestActivity"
+            android:exported="true"
+            android:label="@string/app_name"
             android:theme="@style/Theme.ComposeApp.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,5 +31,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
