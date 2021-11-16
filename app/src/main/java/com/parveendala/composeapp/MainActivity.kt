@@ -15,8 +15,10 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +43,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun MainScreen() {
     val nameListState = remember { mutableStateListOf<String>("Name 1", "Name 2") }
+    val nameTextFieldContent = remember { mutableStateOf<String>("") }
     Surface(
         color = Color.LightGray,
         modifier = Modifier.fillMaxSize()
@@ -61,7 +64,8 @@ private fun MainScreen() {
                 ) {
                     NameList(nameList = nameListState)
                 }
-                SubmitButton { nameListState.add("New Name") }
+                NameTextField(value = nameTextFieldContent.value) { newValue -> nameTextFieldContent.value = newValue }
+                SubmitButton { nameListState.add(nameTextFieldContent.value) }
             }
         }
     }
@@ -86,6 +90,11 @@ fun NameListItem(name: String) {
         style = MaterialTheme.typography.h4,
         textAlign = TextAlign.Center,
     )
+}
+
+@Composable
+fun NameTextField(value: String, onValueChange: (newValue: String) -> Unit) {
+    TextField(value = value, onValueChange = onValueChange)
 }
 
 @Composable
