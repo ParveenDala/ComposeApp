@@ -17,9 +17,14 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Top
@@ -45,29 +50,40 @@ class ProfileTestActivity : ComponentActivity() {
 
 @Composable
 private fun MainScreen() {
-    Surface(
-        color = Color.LightGray,
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Scaffold(topBar = { AppBar() }) {
         Surface(
             color = Color.LightGray,
-            modifier = Modifier.wrapContentSize(align = Alignment.TopCenter)
+            modifier = Modifier.fillMaxSize()
         ) {
-            ProfileCard()
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.CenterHorizontally
+            Surface(
+                color = Color.LightGray,
+                modifier = Modifier.wrapContentSize(align = Alignment.TopCenter)
             ) {
+                ProfileCard()
                 Column(
-                    modifier = Modifier.background(Color.Gray),
-                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Column(
+                        modifier = Modifier.background(Color.Gray),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                    }
                 }
             }
         }
     }
+}
+
+@Composable
+fun AppBar() {
+    TopAppBar(
+        navigationIcon = { Icon(imageVector = Icons.Default.Home, contentDescription = "Home Button", modifier = Modifier.padding(horizontal = 16.dp)) },
+        title = { Text(text = "Home") },
+        elevation = 8.dp
+    )
 }
 
 @Composable
